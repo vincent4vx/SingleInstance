@@ -103,7 +103,7 @@ final public class InstanceServer implements Closeable {
                     iter.remove();
                 }
             }
-        } catch (ClosedSelectorException e) {
+        } catch (ClosedSelectorException|CancelledKeyException e) {
             // Ignore
         }
     }

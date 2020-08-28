@@ -37,7 +37,7 @@ class LockFileTest {
 
         assertEquals("test.lock", lsof()[8]);
         assertEquals(getCurrentPid(), lsof()[1]);
-        assertTrue(lsof()[3].contains("W"), "Expects contains W on " + Arrays.toString(lsof()));
+        assertTrue(lsof()[3].matches(".*[Wu].*"), "Expects contains lock char on " + Arrays.toString(lsof()));
 
         lock.release();
         assertFalse(Files.exists(Paths.get("test.lock")));
@@ -51,7 +51,7 @@ class LockFileTest {
         assertTrue(lock.acquire());
 
         assertEquals("test.lock", lsof()[8]);
-        assertTrue(lsof()[3].contains("W"), "Expects contains W on " + Arrays.toString(lsof()));
+        assertTrue(lsof()[3].matches(".*[Wu].*"), "Expects contains lock char on " + Arrays.toString(lsof()));
 
         lock.release();
         assertFalse(Files.exists(Paths.get("test.lock")));
