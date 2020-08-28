@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,7 +37,7 @@ class LockFileTest {
 
         assertEquals("test.lock", lsof()[8]);
         assertEquals(getCurrentPid(), lsof()[1]);
-        assertTrue(lsof()[3].contains("W"), "Expects contains W on " + lsof()[8]);
+        assertTrue(lsof()[3].contains("W"), "Expects contains W on " + Arrays.toString(lsof()));
 
         lock.release();
         assertFalse(Files.exists(Paths.get("test.lock")));
@@ -50,7 +51,7 @@ class LockFileTest {
         assertTrue(lock.acquire());
 
         assertEquals("test.lock", lsof()[8]);
-        assertTrue(lsof()[3].contains("W"), "Expects contains W on " + lsof()[8]);
+        assertTrue(lsof()[3].contains("W"), "Expects contains W on " + Arrays.toString(lsof()));
 
         lock.release();
         assertFalse(Files.exists(Paths.get("test.lock")));
