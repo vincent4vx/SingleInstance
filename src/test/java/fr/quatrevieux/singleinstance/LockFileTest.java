@@ -1,5 +1,7 @@
 package fr.quatrevieux.singleinstance;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -13,10 +15,20 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LockFileTest {
+    private LockFile lock;
+
+    @BeforeEach
+    void setUp() {
+        lock = new LockFile("test.lock");
+    }
+
+    @AfterEach
+    void tearDown() {
+        lock.release();
+    }
+
     @Test
     void acquireReleaseFunctional() throws IOException {
-        LockFile lock = new LockFile("test.lock");
-
         assertTrue(lock.acquire());
         assertTrue(Files.exists(Paths.get("test.lock")));
 
@@ -24,7 +36,7 @@ class LockFileTest {
 
         assertEquals("test.lock", lsof()[8]);
         assertEquals(getCurrentPid(), lsof()[1]);
-        assertTrue(lsof()[3].contains("W"));
+        assertTrue(lsof()[3].contains("W"), "Expects contains W on " + lsof()[8]);
 
         lock.release();
         assertFalse(Files.exists(Paths.get("test.lock")));
@@ -32,15 +44,13 @@ class LockFileTest {
 
     @Test
     void lockReleaseFunctional() throws IOException {
-        LockFile lock = new LockFile("test.lock");
-
         lock.lock();
         assertTrue(Files.exists(Paths.get("test.lock")));
 
         assertTrue(lock.acquire());
 
         assertEquals("test.lock", lsof()[8]);
-        assertTrue(lsof()[3].contains("W"));
+        assertTrue(lsof()[3].contains("W"), "Expects contains W on " + lsof()[8]);
 
         lock.release();
         assertFalse(Files.exists(Paths.get("test.lock")));
@@ -48,8 +58,6 @@ class LockFileTest {
 
     @Test
     void writeRead() throws IOException {
-        LockFile lock = new LockFile("test.lock");
-
         lock.acquire();
 
         lock.write(output -> {
