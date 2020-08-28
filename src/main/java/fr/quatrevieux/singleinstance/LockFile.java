@@ -37,7 +37,7 @@ import java.nio.channels.FileLock;
  *     Runtime.getRuntime().addShutdownHook(new Thread(lock::release));
  * </code>
  *
- * @todo handle multiple instance : release should be performed only if all instance are released
+ * TODO: handle multiple instance : release should be performed only if all instance are released
  */
 final public class LockFile {
     @FunctionalInterface

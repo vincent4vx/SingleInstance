@@ -24,12 +24,12 @@ package fr.quatrevieux.singleinstance.ipc;
  */
 public interface Message {
     /**
-     * The message name
+     * @return The message name
      */
     public String name();
 
     /**
-     * The message payload
+     * @return The message payload
      */
     public byte[] data();
 }

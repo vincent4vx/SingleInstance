@@ -35,7 +35,7 @@ import java.util.function.Consumer;
  * <code>
  *     public static void main(String[] args) {
  *         // Check if an instance is running
- *         SingleInstance.onAlreadyRunning(instance -> {
+ *         SingleInstance.onAlreadyRunning(instance -&gt; {
  *             // Send the argument to the instance and stop the current process
  *             instance.send("Open", args[0].getBytes());
  *             System.exit(0);
@@ -45,7 +45,7 @@ import java.util.function.Consumer;
  *         MyApp app = xxx;
  *
  *         // Start the IPC server
- *         SingleInstance.onMessage(message -> {
+ *         SingleInstance.onMessage(message -&gt; {
  *             // Receive an "Open" message
  *             if (message.name().equals("Open")) {
  *                 app.open(new String(message.data()));
@@ -126,7 +126,7 @@ final public class SingleInstance {
      * Note: This method will start a new thread to consume messages
      *
      * <code>
-     *     SingleInstance.onMessage(message -> {
+     *     SingleInstance.onMessage(message -&gt; {
      *         if (message.name().equals("MyMessage")) {
      *             // Handle message
      *         }
@@ -161,7 +161,7 @@ final public class SingleInstance {
      *
      * Usage:
      * <code>
-     *     SingleInstance.onAlreadyRunning(instance -> {
+     *     SingleInstance.onAlreadyRunning(instance -&gt; {
      *         instance.send("MyMessage"); // Send a message to the running instance
      *         System.exit(0); // Stop the current process
      *     });

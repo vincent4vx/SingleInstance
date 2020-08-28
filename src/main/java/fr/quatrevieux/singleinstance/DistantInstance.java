@@ -57,6 +57,8 @@ final public class DistantInstance implements MessageSender {
 
     /**
      * Get the PID of the distant instance
+     *
+     * @return The PID as int
      */
     public int pid() {
         return info.pid;
@@ -65,6 +67,7 @@ final public class DistantInstance implements MessageSender {
     /**
      * Get the opened port number
      *
+     * @return The port number as int
      * @throws IllegalStateException When port cannot be resolved
      */
     public int port() {
@@ -87,6 +90,7 @@ final public class DistantInstance implements MessageSender {
      * Get the IPC client to communicate with the distant instance
      * Note: send methods can be used as shortcut
      *
+     * @return The client instance
      * @throws IllegalStateException When cannot find the port number
      */
     public InstanceClient client() {

@@ -34,7 +34,7 @@ import java.util.Optional;
  *         // Check single instance
  *         InstanceManager manager = new InstanceManager();
  *
- *         manager.find().ifPresent(distant -> {
+ *         manager.find().ifPresent(distant -&gt; {
  *             // A running instance is present : send a message and close the application
  *             distant.send("My message", args[0].getBytes());
  *             System.exit(0);
@@ -44,8 +44,8 @@ import java.util.Optional;
  *         MyApp app = xxx;
  *
  *         // Start the IPC server
- *         manager.server().ifPresent(server -> {
- *             server.consume(message -> app.handleMessage(message));
+ *         manager.server().ifPresent(server -&gt; {
+ *             server.consume(message -&gt; app.handleMessage(message));
  *         });
  *     }
  * </code>
@@ -84,7 +84,7 @@ final public class InstanceManager {
      * Usage:
      * <code>
      *     InstanceManager im = new InstanceManager();
-     *     im.find().ifPresent(distant -> {
+     *     im.find().ifPresent(distant -&gt; {
      *         System.out.println("Process already running");
      *         // Send a message to the first process
      *         distant.send("Open", args[0].getBytes());
@@ -107,8 +107,8 @@ final public class InstanceManager {
      * Usage:
      * <code>
      *     InstanceManager im = new InstanceManager();
-     *     im.server().ifPresent(server -> {
-     *         server.consume(message -> {
+     *     im.server().ifPresent(server -&gt; {
+     *         server.consume(message -&gt; {
      *             // Process received messages
      *             if (message.name().equals(xxx)) {
      *                 // ...

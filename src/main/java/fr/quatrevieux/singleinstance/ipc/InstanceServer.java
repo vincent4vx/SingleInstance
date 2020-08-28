@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  *     try (InstanceServer server = new InstanceServer()) {
  *         server.open();
  *
- *         server.consume(message -> {
+ *         server.consume(message -&gt; {
  *             // process received message
  *             if (message.name().equals(xxx)) {
  *                 //...
@@ -130,6 +130,7 @@ final public class InstanceServer implements Closeable {
     /**
      * Get the bind port number
      *
+     * @return The port number as int
      * @throws IllegalStateException If the server is not opened
      */
     public int port() {
@@ -142,6 +143,8 @@ final public class InstanceServer implements Closeable {
 
     /**
      * Check if the server is running
+     *
+     * @return true if the server is running
      */
     public boolean running() {
         return selector != null && selector.isOpen() && serverSocket != null && serverSocket.isOpen();

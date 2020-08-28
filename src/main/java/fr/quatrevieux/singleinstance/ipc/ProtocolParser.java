@@ -89,6 +89,8 @@ final public class ProtocolParser {
 
     /**
      * Get all parsed packets
+     *
+     * @return messages
      */
     public List<Message> packets() {
         return packets;
@@ -157,6 +159,8 @@ final public class ProtocolParser {
     /**
      * Get the {@link ProtocolParser} instance related to the key
      * If the parser is not attached, a new instance will be created
+     *
+     * @param key The key to attach
      *
      * @return The parser instance
      */
