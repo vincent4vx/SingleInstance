@@ -19,9 +19,10 @@
 
 package fr.quatrevieux.singleinstance;
 
-
 import fr.quatrevieux.singleinstance.ipc.InstanceServer;
 import fr.quatrevieux.singleinstance.ipc.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -60,6 +61,8 @@ final public class SingleInstance {
     static private ExecutorService executor;
     static private DistantInstance distantInstance;
     static private Thread shutdownHook;
+
+    final static private Logger LOGGER = LoggerFactory.getLogger(SingleInstance.class);
 
     /**
      * Initialize the SingleInstance system
@@ -150,7 +153,7 @@ final public class SingleInstance {
                 try {
                     server.consume(consumer);
                 } catch (IOException e) {
-                    e.printStackTrace(); // @todo logger
+                    LOGGER.error("Error during reading message on IPC server", e);
                 }
             });
         });
@@ -208,7 +211,7 @@ final public class SingleInstance {
             try {
                 server.close();
             } catch (IOException e) {
-                e.printStackTrace(); // @todo logger
+                LOGGER.error("Error during closing the IPC server", e);
             }
             server = null;
         }
