@@ -99,6 +99,36 @@ class LockFileTest {
         lock.release();
     }
 
+    @Test
+    void acquireMultiple() throws IOException {
+        assertTrue(lock.acquire());
+
+        LockFile other = new LockFile("test.lock");
+        assertTrue(other.acquire());
+
+        other.release();
+        assertTrue(Files.exists(Paths.get("test.lock")));
+        assertEquals("test.lock", lsof()[8]);
+        assertTrue(lsof()[3].matches(".*[Wu].*"), "Expects contains lock char on " + Arrays.toString(lsof()));
+        assertTrue(lock.acquire());
+
+        lock.release();
+        assertFalse(Files.exists(Paths.get("test.lock")));
+    }
+
+    @Test
+    void equalsAndHash() {
+        assertEquals(lock, lock);
+        assertNotEquals(lock, null);
+        assertEquals(lock, new LockFile("test.lock"));
+        assertNotEquals(lock, new LockFile("other.lock"));
+        assertNotEquals(lock, new Object());
+
+        assertEquals(lock.hashCode(), lock.hashCode());
+        assertEquals(lock.hashCode(), new LockFile("test.lock").hashCode());
+        assertNotEquals(lock.hashCode(), new LockFile("other.lock").hashCode());
+    }
+
     private String[] lsof() throws IOException {
         Process process = Runtime.getRuntime().exec("lsof test.lock");
         BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));

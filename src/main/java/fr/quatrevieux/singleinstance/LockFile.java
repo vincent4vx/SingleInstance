@@ -21,6 +21,9 @@ package fr.quatrevieux.singleinstance;
 
 import java.io.*;
 import java.nio.channels.FileLock;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Handle lock file
@@ -36,8 +39,6 @@ import java.nio.channels.FileLock;
  *
  *     Runtime.getRuntime().addShutdownHook(new Thread(lock::release));
  * }</pre>
- *
- * TODO: handle multiple instance : release should be performed only if all instance are released
  */
 final public class LockFile {
     @FunctionalInterface
@@ -50,12 +51,82 @@ final public class LockFile {
         public R read(DataInput input) throws IOException;
     }
 
+    /**
+     * Handle sharing the FileLock instances
+     */
+    static private class SharedLock {
+        @FunctionalInterface
+        private interface FileLockFactory {
+            public FileLock create() throws IOException;
+        }
+
+        /**
+         * Store all lock instances
+         */
+        final static private Map<File, SharedLock> instances = new HashMap<>();
+
+        final private File file;
+        final private FileLock fileLock;
+        private int count = 1;
+
+        public SharedLock(File file, FileLock fileLock) {
+            this.file = file;
+            this.fileLock = fileLock;
+        }
+
+        /**
+         * Try to remove the shared lock
+         *
+         * @return true if the lock is removed
+         */
+        private boolean remove() throws IOException {
+            synchronized (instances) {
+                --count;
+
+                if (count <= 0) {
+                    fileLock.release();
+                    instances.remove(file);
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        /**
+         * Create the SharedLock instance
+         *
+         * @return The lock instance, or null if cannot get the lock
+         */
+        static private SharedLock create(File file, FileLockFactory factory) throws IOException {
+            synchronized (instances) {
+                SharedLock sharedLock = instances.get(file);
+
+                if (sharedLock != null) {
+                    ++sharedLock.count;
+                    return sharedLock;
+                }
+
+                FileLock lock = factory.create();
+
+                if (lock == null) {
+                    return null;
+                }
+
+                sharedLock = new SharedLock(file, lock);
+                instances.put(file, sharedLock);
+
+                return sharedLock;
+            }
+        }
+    }
+
     final static public String DEFAULT_FILENAME = ".lock";
 
     final private File file;
 
     private RandomAccessFile randomAccessFile;
-    private FileLock fileLock;
+    private SharedLock lock;
 
     /**
      * Create the lock file using the default file name
@@ -69,7 +140,7 @@ final public class LockFile {
     }
 
     public LockFile(File file) {
-        this.file = file;
+        this.file = file.getAbsoluteFile();
     }
 
     /**
@@ -80,11 +151,11 @@ final public class LockFile {
      * @throws IOException When lock file creation failed
      */
     public boolean acquire() throws IOException {
-        if (fileLock == null) {
-            fileLock = file().getChannel().tryLock();
+        if (lock == null) {
+            lock = SharedLock.create(file, () -> file().getChannel().tryLock());
         }
 
-        return fileLock != null;
+        return lock != null;
     }
 
     /**
@@ -94,8 +165,8 @@ final public class LockFile {
      * @throws IOException When lock file creation failed
      */
     public void lock() throws IOException {
-        if (fileLock == null) {
-            fileLock = file().getChannel().lock();
+        if (lock == null) {
+            lock = SharedLock.create(file, () -> file().getChannel().lock());
         }
     }
 
@@ -107,10 +178,9 @@ final public class LockFile {
         try {
             boolean deleteFile = false;
 
-            if (fileLock != null) {
-                fileLock.release();
-                fileLock = null;
-                deleteFile = true;
+            if (lock != null) {
+                deleteFile = lock.remove();
+                lock = null;
             }
 
             if (randomAccessFile != null) {
@@ -165,6 +235,24 @@ final public class LockFile {
         super.finalize();
 
         release();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        LockFile lockFile = (LockFile) o;
+        return file.equals(lockFile.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(file);
     }
 
     private RandomAccessFile file() throws FileNotFoundException {
