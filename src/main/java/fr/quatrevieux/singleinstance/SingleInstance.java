@@ -32,10 +32,10 @@ import java.util.function.Consumer;
  * Facade for a simple usage of {@link InstanceManager}
  *
  * Usage:
- * <code>
+ * <pre>{@code
  *     public static void main(String[] args) {
  *         // Check if an instance is running
- *         SingleInstance.onAlreadyRunning(instance -&gt; {
+ *         SingleInstance.onAlreadyRunning(instance -> {
  *             // Send the argument to the instance and stop the current process
  *             instance.send("Open", args[0].getBytes());
  *             System.exit(0);
@@ -45,14 +45,14 @@ import java.util.function.Consumer;
  *         MyApp app = xxx;
  *
  *         // Start the IPC server
- *         SingleInstance.onMessage(message -&gt; {
+ *         SingleInstance.onMessage(message -> {
  *             // Receive an "Open" message
  *             if (message.name().equals("Open")) {
  *                 app.open(new String(message.data()));
  *             }
  *         });
  *     }
- * </code>
+ * }</pre>
  */
 final public class SingleInstance {
     static private InstanceManager manager;
@@ -99,14 +99,14 @@ final public class SingleInstance {
      * Check if the current process is the first running instance
      *
      * Usage:
-     * <code>
+     * <pre>{@code
      *     public static void main(String[] args) {
      *         if (!SingleInstance.isFirst()) {
      *             System.err.println("Already running");
      *             return;
      *         }
      *     }
-     * </code>
+     * }</pre>
      *
      * @return true if the current process is the first running instance
      *
@@ -125,13 +125,13 @@ final public class SingleInstance {
      *
      * Note: This method will start a new thread to consume messages
      *
-     * <code>
-     *     SingleInstance.onMessage(message -&gt; {
+     * <pre>{@code
+     *     SingleInstance.onMessage(message -> {
      *         if (message.name().equals("MyMessage")) {
      *             // Handle message
      *         }
      *     });
-     * </code>
+     * }</pre>
      *
      * @param consumer The action to perform when receiving messages
      *
@@ -160,12 +160,12 @@ final public class SingleInstance {
      * Perform action is an already running instance is found
      *
      * Usage:
-     * <code>
-     *     SingleInstance.onAlreadyRunning(instance -&gt; {
+     * <pre>{@code
+     *     SingleInstance.onAlreadyRunning(instance -> {
      *         instance.send("MyMessage"); // Send a message to the running instance
      *         System.exit(0); // Stop the current process
      *     });
-     * </code>
+     * }</pre>
      *
      * @param action Action to perform
      *

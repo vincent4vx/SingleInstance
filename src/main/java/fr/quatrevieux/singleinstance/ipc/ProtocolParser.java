@@ -38,7 +38,7 @@ import java.util.List;
  * Note: The parser instance must not be shared between clients
  *
  * Usage:
- * <code>
+ * <pre>{@code
  *     ByteBuffer buffer = xxx;
  *     SelectionKey key = xxx;
  *
@@ -62,7 +62,7 @@ import java.util.List;
  *         // Clear already handled packets
  *         parser.clear();
  *     }
- * </code>
+ * }</pre>
  */
 final public class ProtocolParser {
     final private List<Message> packets = new ArrayList<>();

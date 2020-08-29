@@ -29,12 +29,12 @@ import java.util.Optional;
  * Handle single instance system
  *
  * Usage :
- * <code>
+ * <pre>{@code
  *     public static void main(String[] args) {
  *         // Check single instance
  *         InstanceManager manager = new InstanceManager();
  *
- *         manager.find().ifPresent(distant -&gt; {
+ *         manager.find().ifPresent(distant -> {
  *             // A running instance is present : send a message and close the application
  *             distant.send("My message", args[0].getBytes());
  *             System.exit(0);
@@ -44,11 +44,11 @@ import java.util.Optional;
  *         MyApp app = xxx;
  *
  *         // Start the IPC server
- *         manager.server().ifPresent(server -&gt; {
- *             server.consume(message -&gt; app.handleMessage(message));
+ *         manager.server().ifPresent(server -> {
+ *             server.consume(message -> app.handleMessage(message));
  *         });
  *     }
- * </code>
+ * }</pre>
  */
 final public class InstanceManager {
     final private LockFile lockFile;
@@ -82,15 +82,15 @@ final public class InstanceManager {
      * Try to get the distant instance (the first run process)
      *
      * Usage:
-     * <code>
+     * <pre>{@code
      *     InstanceManager im = new InstanceManager();
-     *     im.find().ifPresent(distant -&gt; {
+     *     im.find().ifPresent(distant -> {
      *         System.out.println("Process already running");
      *         // Send a message to the first process
      *         distant.send("Open", args[0].getBytes());
      *         System.exit(0);
      *     });
-     * </code>
+     * }</pre>
      *
      * @return An empty optional if the current process is the first running, or the distant instance if exists
      *
@@ -105,17 +105,17 @@ final public class InstanceManager {
      * If the server is successfully opened, the port number will be written on the lock file
      *
      * Usage:
-     * <code>
+     * <pre>{@code
      *     InstanceManager im = new InstanceManager();
-     *     im.server().ifPresent(server -&gt; {
-     *         server.consume(message -&gt; {
+     *     im.server().ifPresent(server -> {
+     *         server.consume(message -> {
      *             // Process received messages
      *             if (message.name().equals(xxx)) {
      *                 // ...
      *             }
      *         });
      *     });
-     * </code>
+     * }</pre>
      *
      * @return An empty optional if the current process is not the first running instance
      *

@@ -26,7 +26,7 @@ import java.nio.channels.FileLock;
  * Handle lock file
  * A lock file can be acquire to block all other process, until it's released
  *
- * <code>
+ * <pre>{@code
  *     LockFile lock = new LockFile("app.lock");
  *
  *     if (!lock.acquire()) {
@@ -35,7 +35,7 @@ import java.nio.channels.FileLock;
  *     }
  *
  *     Runtime.getRuntime().addShutdownHook(new Thread(lock::release));
- * </code>
+ * }</pre>
  *
  * TODO: handle multiple instance : release should be performed only if all instance are released
  */

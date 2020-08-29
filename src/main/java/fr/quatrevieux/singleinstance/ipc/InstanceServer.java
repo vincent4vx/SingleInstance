@@ -32,18 +32,18 @@ import java.util.function.Consumer;
  * IPC server for the first running instance
  *
  * Usage:
- * <code>
+ * <pre>{@code
  *     try (InstanceServer server = new InstanceServer()) {
  *         server.open();
  *
- *         server.consume(message -&gt; {
+ *         server.consume(message -> {
  *             // process received message
  *             if (message.name().equals(xxx)) {
  *                 //...
  *             }
  *         });
  *     }
- * </code>
+ * }</pre>
  */
 final public class InstanceServer implements Closeable {
     private ServerSocketChannel serverSocket;

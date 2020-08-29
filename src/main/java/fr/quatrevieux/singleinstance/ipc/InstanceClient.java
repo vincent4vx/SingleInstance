@@ -28,11 +28,11 @@ import java.net.Socket;
  * IPC client for sending actions to the distant instance
  *
  * Usage:
- * <code>
+ * <pre>{@code
  *     try (InstanceClient client = new InstanceClient(1234)) {
  *         client.send("Hello", "my payload".getBytes());
  *     }
- * </code>
+ * }</pre>
  */
 final public class InstanceClient implements Closeable, MessageSender {
     final private int port;
